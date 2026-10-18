@@ -344,12 +344,15 @@ export class App {
       }
     }
 
-    // Position Character strictly in dedicated left lane (never covers code)
+    // Position Character strictly in dedicated left lane or user-custom X if dragged
     const stageRect = this.dom.characterStage.getBoundingClientRect();
     if (targetEl) {
       const targetRect = targetEl.getBoundingClientRect();
       const relY = Math.max(6, targetRect.top - stageRect.top - 18);
-      const relX = 8; // Strictly on the left side!
+      // Respect user's dragged horizontal position if they customized it!
+      const relX = this.character.hasCustomPosition && this.character.customX !== null
+        ? this.character.customX
+        : 8;
 
       this.character.moveTo(relX, relY, { pose: step.pose });
 

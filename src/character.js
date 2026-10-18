@@ -12,11 +12,92 @@ export class CharacterController {
     this.currentPose = 'idle';
     this.x = 20;
     this.y = 80;
+    this.customX = null;
+    this.customY = null;
+    this.hasCustomPosition = false;
+    this.isDragging = false;
     this.init();
+    this.enableDragging();
   }
 
   init() {
     this.render();
+  }
+
+  enableDragging() {
+    let startPointerX = 0;
+    let startPointerY = 0;
+    let startCharX = 0;
+    let startCharY = 0;
+
+    this.containerEl.setAttribute('title', 'Потяните, чтобы переместить • Двойной клик — вернуть на место');
+
+    this.containerEl.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      this.isDragging = true;
+      this.containerEl.setPointerCapture(e.pointerId);
+
+      startPointerX = e.clientX;
+      startPointerY = e.clientY;
+      startCharX = this.x;
+      startCharY = this.y;
+
+      this.containerEl.classList.add('is-dragging');
+      this.setPose('walk');
+    });
+
+    this.containerEl.addEventListener('pointermove', (e) => {
+      if (!this.isDragging) return;
+
+      const dx = e.clientX - startPointerX;
+      const dy = e.clientY - startPointerY;
+
+      const parentEl = this.containerEl.parentElement;
+      const parentRect = parentEl.getBoundingClientRect();
+
+      const maxX = Math.max(0, parentRect.width - 90);
+      const maxY = Math.max(0, parentRect.height - 90);
+
+      const newX = Math.max(0, Math.min(maxX, startCharX + dx));
+      const newY = Math.max(0, Math.min(maxY, startCharY + dy));
+
+      this.x = newX;
+      this.y = newY;
+      this.customX = newX;
+      this.customY = newY;
+      this.hasCustomPosition = true;
+
+      this.containerEl.style.transform = `translate3d(${newX}px, ${newY}px, 0)`;
+    });
+
+    const finishDrag = (e) => {
+      if (!this.isDragging) return;
+      this.isDragging = false;
+      try {
+        this.containerEl.releasePointerCapture(e.pointerId);
+      } catch (_) {}
+      this.containerEl.classList.remove('is-dragging');
+      this.setPose(this.currentPose || 'idle');
+    };
+
+    this.containerEl.addEventListener('pointerup', finishDrag);
+    this.containerEl.addEventListener('pointercancel', finishDrag);
+
+    // Double-click resets character back to default position
+    this.containerEl.addEventListener('dblclick', (e) => {
+      e.stopPropagation();
+      this.resetCustomPosition();
+      if (window.pythonApp) {
+        window.pythonApp.updateStepView(window.pythonApp.currentStepIdx);
+      }
+    });
+  }
+
+  resetCustomPosition() {
+    this.hasCustomPosition = false;
+    this.customX = null;
+    this.customY = null;
   }
 
   setCharacter(charName) {
@@ -35,6 +116,8 @@ export class CharacterController {
   }
 
   moveTo(targetX, targetY, options = {}) {
+    if (this.isDragging) return;
+
     this.x = targetX;
     this.y = targetY;
 
