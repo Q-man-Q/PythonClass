@@ -1,0 +1,13 @@
+{
+  "name": "python-cartoon-interpreter",
+  "version": "1.0.0",
+  "description": "Интерактивный мультяшный визуализатор работы интерпретатора Python для уроков в школе",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "start": "python3 -m http.server 8000"
+  },
+  "keywords": ["python", "interpreter", "visualizer", "education", "school", "kids", "github-pages"],
+  "author": "Antigravity Pair Programmer",
+  "license": "MIT"
+}

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Питон-Класс: Интерактивный интерпретатор Python для школы</title>
+  <meta name="description" content="Обучающий визуализатор работы интерпретатора Python для школьных уроков информатики. Мультяшный персонаж показывает выполнение кода по строчкам и элементам.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐍</text></svg>">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/editor.css">
+  <link rel="stylesheet" href="styles/character.css">
+  <link rel="stylesheet" href="styles/memory.css">
+</head>
+<body>
+
+  <!-- Top Application Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-logo">🐍</div>
+      <div class="brand-text">
+        <h1>Питон-Класс</h1>
+        <p>Как работает интерпретатор Python на уроке в школе</p>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <!-- Lesson Presets -->
+      <div class="preset-picker">
+        <label for="presetSelect" class="picker-label">Тема урока:</label>
+        <select id="presetSelect" class="app-select"></select>
+      </div>
+
+      <!-- Character Picker -->
+      <div class="character-picker">
+        <label for="characterSelect" class="picker-label">Персонаж:</label>
+        <select id="characterSelect" class="app-select">
+          <option value="pip">🐍 Змейка Пип</option>
+          <option value="byte">🤖 Робот Байт</option>
+        </select>
+      </div>
+
+      <!-- Edit Code Button -->
+      <button class="btn btn-secondary" id="toggleEditorMode">
+        <span>✏️</span>
+        <span>Редактировать код</span>
+      </button>
+
+      <!-- Projector Mode -->
+      <button class="btn btn-secondary" id="presentationToggle" title="Увеличенный шрифт для интерактивной доски или проектора">
+        <span>📽️</span>
+        <span>Для проектора</span>
+      </button>
+
+      <!-- Sound Toggle -->
+      <button class="btn btn-secondary" id="soundToggle" title="Звуковые эффекты">
+        <span>🔊</span>
+        <span>Звук вкл</span>
+      </button>
+
+      <!-- Share Link -->
+      <button class="btn btn-secondary" id="shareBtn" title="Скопировать ссылку на этот код">
+        <span>🔗</span>
+        <span>Поделиться</span>
+      </button>
+
+      <!-- Help Button -->
+      <button class="btn btn-secondary" id="helpBtn" title="Шпаргалка: Как устроен интерпретатор Python">
+        <span>❓</span>
+        <span>Справка</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Application Stage -->
+  <main class="app-main">
+
+    <!-- Left Column: Code Stage & Character -->
+    <section class="stage-panel">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>💻</span>
+            <span>Код программы (Python)</span>
+          </div>
+          <span class="picker-label">Интерактивный разбор выражений</span>
+        </div>
+
+        <div class="editor-stage-container" id="editorContainer">
+          <!-- Textarea for editing custom Python code -->
+          <textarea id="codeEditor" class="code-editor-textarea" spellcheck="false" placeholder="Вставьте сюда свой код на Python..."></textarea>
+
+          <!-- Visual Code Viewer with Token Spans -->
+          <div id="codeViewer" class="code-visual-viewer"></div>
+
+          <!-- Character & Speech Stage Layer -->
+          <div class="character-stage-layer" id="characterStage">
+            <div class="character-actor" id="characterActor"></div>
+            <div class="speech-bubble" id="speechBubble"></div>
+            <div class="eval-badge" id="evalBadge"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Computer State & Memory -->
+    <section class="state-panel">
+      <!-- Variable Memory Shelf -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>🗄️</span>
+            <span>Память компьютера (Коробочки с переменными)</span>
+          </div>
+        </div>
+        <div class="memory-shelf-container" id="memoryContainer"></div>
+      </div>
+
+      <!-- Call Stack -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>📚</span>
+            <span>Стек вызовов функций (Call Stack)</span>
+          </div>
+        </div>
+        <div class="stack-container" id="callStackContainer"></div>
+      </div>
+
+      <!-- Retro Terminal Console Output -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>📺</span>
+            <span>Экран вывода (Терминал / print)</span>
+          </div>
+        </div>
+        <div class="terminal-screen-container" id="terminalConsole"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Player & Timeline Bar -->
+  <footer class="player-bar">
+    <div class="player-main-row">
+      <div class="player-buttons">
+        <button class="btn btn-secondary" id="btnReset" title="В начало">
+          <span>⏮️</span>
+          <span>В начало</span>
+        </button>
+        <button class="btn btn-secondary" id="btnStepBack" title="Шаг назад (Стрелка влево)">
+          <span>◀️</span>
+          <span>Назад</span>
+        </button>
+        <button class="btn btn-primary btn-play" id="btnPlayPause" title="Запуск / Пауза (Пробел)">
+          <span>▶️</span>
+          <span>Старт</span>
+        </button>
+        <button class="btn btn-secondary" id="btnStepForward" title="Шаг вперёд (Стрелка вправо)">
+          <span>Вперёд</span>
+          <span>▶️</span>
+        </button>
+      </div>
+
+      <div class="step-counter" id="stepCounter">Шаг 1 из 1</div>
+
+      <div class="player-secondary-controls">
+        <!-- Granularity switch -->
+        <button class="btn btn-secondary" id="granularityToggle" title="Переключить детальность шагов">
+          <span>🔍</span>
+          <span>Режим: По элементам</span>
+        </button>
+
+        <!-- Speed control -->
+        <div class="speed-control">
+          <span>🐢</span>
+          <input type="range" id="speedSlider" class="speed-slider" min="0.4" max="2.5" step="0.2" value="1.0" title="Скорость анимации" />
+          <span>🚀</span>
+          <span class="speed-val" id="speedLabel">1.0x</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline Scrubber -->
+    <div class="player-scrubber-row">
+      <input type="range" id="timelineSlider" class="timeline-slider" min="0" max="0" value="0" title="Перемещайте ползунок по шагам выполнения" />
+    </div>
+  </footer>
+
+  <!-- Interactive Input Modal -->
+  <div class="modal-overlay" id="inputModal"></div>
+
+  <!-- Help / Educational Glossary Modal -->
+  <div class="modal-overlay" id="helpModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>🎓 Как работает интерпретатор Python?</h3>
+        <button class="btn btn-secondary" id="closeHelpBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>Python — это <strong>интерпретируемый</strong> язык программирования. Это означает, что специальная программа (интерпретатор) читает код сверху вниз и выполняет его команда за командой!</p>
+        
+        <h4>1. Токенизация (Разбор на слова)</h4>
+        <p>Интерпретатор сначала разбивает текст на отдельные "кирпичики" — токены (числа, имена переменных, знаки сложения, ключевые слова <code>if</code>, <code>for</code>).</p>
+
+        <h4>2. Построение дерева команд (AST)</h4>
+        <p>Компьютер строит синтаксическое дерево, чтобы понять порядок действий (например, сначала умножение, потом сложение, сначала проверка условия, затем переход в ветку).</p>
+
+        <h4>3. Память (Коробочки для переменных)</h4>
+        <p>Когда вы пишете <code>x = 5</code>, интерпретатор выделяет в оперативной памяти коробочку с ярлычком <code>x</code> и кладёт внутрь значение <code>5</code>. Когда в формуле встречается <code>x</code>, значение извлекается из коробки.</p>
+
+        <h4>4. Экран вывода (print)</h4>
+        <p>Команда <code>print(...)</code> передаёт данные на экран монитора (в консоль), чтобы результат работы увидел человек.</p>
+
+        <h4>Горячие клавиши:</h4>
+        <ul>
+          <li><strong>Пробел</strong> — Старт / Пауза воспроизведения</li>
+          <li><strong>Стрелка вправо</strong> — Шаг вперёд</li>
+          <li><strong>Стрелка влево</strong> — Шаг назад</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

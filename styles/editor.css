@@ -1,0 +1,203 @@
+/**
+ * Code Editor & Token Visualizer Styles
+ */
+
+.editor-stage-container {
+  position: relative;
+  min-height: 440px;
+  max-height: 600px;
+  overflow: auto;
+  background: #090d16;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  padding: 16px;
+  font-family: var(--font-code);
+  font-size: 15px;
+}
+
+/* Edit Mode Textarea vs Visual Mode Viewer */
+.code-editor-textarea {
+  display: none;
+  width: 100%;
+  height: 420px;
+  background: transparent;
+  color: #f1f5f9;
+  border: none;
+  outline: none;
+  resize: vertical;
+  font-family: var(--font-code);
+  font-size: 15px;
+  line-height: 1.8;
+  padding: 10px;
+  white-space: pre;
+  tab-size: 4;
+}
+
+.edit-mode .code-editor-textarea {
+  display: block;
+}
+
+.edit-mode .code-visual-viewer {
+  display: none;
+}
+
+.edit-mode .character-stage-layer {
+  display: none;
+}
+
+/* Code Visual Viewer */
+.code-visual-viewer {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: fit-content;
+}
+
+.code-line-row {
+  display: flex;
+  align-items: baseline;
+  line-height: 1.9;
+  padding: 2px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.code-line-row.active-line {
+  background-color: rgba(34, 197, 94, 0.12);
+}
+
+.code-line-row.active-line::before {
+  content: '▶';
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent-green);
+  font-size: 10px;
+  animation: pulseArrow 1s infinite alternate;
+}
+
+.line-number {
+  width: 38px;
+  user-select: none;
+  color: #475569;
+  text-align: right;
+  padding-right: 14px;
+  font-weight: 500;
+}
+
+.line-content {
+  flex: 1;
+  white-space: pre;
+  position: relative;
+}
+
+/* Syntax Highlighting */
+.token {
+  display: inline-block;
+  border-radius: 4px;
+  padding: 0 2px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.tok-keyword {
+  color: #c084fc; /* purple */
+  font-weight: 700;
+}
+
+.tok-name {
+  color: #38bdf8; /* cyan */
+  font-weight: 500;
+}
+
+.tok-number {
+  color: #fb923c; /* orange */
+  font-weight: 600;
+}
+
+.tok-string {
+  color: #4ade80; /* emerald green */
+}
+
+.tok-operator {
+  color: #f43f5e; /* vibrant rose/red */
+  font-weight: 700;
+}
+
+.tok-delimiter {
+  color: #cbd5e1;
+}
+
+.tok-comment {
+  color: #64748b;
+  font-style: italic;
+}
+
+/* Active Token Focus & Animation */
+.token.active-token {
+  background: rgba(56, 189, 248, 0.28);
+  box-shadow: 0 0 0 2px #38bdf8, 0 0 12px rgba(56, 189, 248, 0.5);
+  border-radius: 4px;
+  transform: scale(1.05);
+  z-index: 20;
+}
+
+/* Floating Math Evaluation Badge */
+.eval-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale(0.8);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.eval-badge.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.badge-text {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  font-family: var(--font-code);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid #34d399;
+  animation: badgePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Error Box in Viewer */
+.code-error-box {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid #ef4444;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  color: #fca5a5;
+  margin: 16px;
+}
+
+.code-error-box h3 {
+  color: #f87171;
+  margin-bottom: 6px;
+}
+
+@keyframes pulseArrow {
+  from { opacity: 0.4; transform: translateY(-50%) translateX(0); }
+  to { opacity: 1; transform: translateY(-50%) translateX(3px); }
+}
+
+@keyframes badgePop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
