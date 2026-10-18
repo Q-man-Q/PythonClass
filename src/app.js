@@ -344,12 +344,12 @@ export class App {
       }
     }
 
-    // Position Character and Speech Bubble
+    // Position Character strictly in dedicated left lane (never covers code)
     const stageRect = this.dom.characterStage.getBoundingClientRect();
     if (targetEl) {
       const targetRect = targetEl.getBoundingClientRect();
-      const relY = Math.max(10, targetRect.top - stageRect.top - 20);
-      const relX = Math.min(stageRect.width - 140, Math.max(20, targetRect.left - stageRect.left - 90));
+      const relY = Math.max(6, targetRect.top - stageRect.top - 18);
+      const relX = 8; // Strictly on the left side!
 
       this.character.moveTo(relX, relY, { pose: step.pose });
 
@@ -358,8 +358,16 @@ export class App {
       } else {
         this.character.hideBadge();
       }
+
+      // Smoothly ensure active line is visible
+      if (step.line) {
+        const lineRow = document.getElementById(`line-row-${step.line}`);
+        if (lineRow && typeof lineRow.scrollIntoView === 'function') {
+          lineRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
     } else {
-      this.character.moveTo(30, 40, { pose: step.pose });
+      this.character.moveTo(8, 20, { pose: step.pose });
       this.character.hideBadge();
     }
 

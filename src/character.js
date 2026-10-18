@@ -54,10 +54,16 @@ export class CharacterController {
       return;
     }
 
+    const charName = this.currentCharacter === 'pip' ? 'Питончик Пип' : 'Робот Байт';
+    const charAvatar = this.currentCharacter === 'pip' ? '🐍' : '🤖';
+
     this.speechEl.innerHTML = `
       <div class="speech-inner">
-        <span class="speech-icon">${this.getPoseIcon(pose)}</span>
-        <span class="speech-text">${message}</span>
+        <span class="speech-avatar">${charAvatar}</span>
+        <div class="speech-content-wrap">
+          <span class="speech-author">${charName} (${this.getPoseIcon(pose)})</span>
+          <span class="speech-text">${message}</span>
+        </div>
       </div>
     `;
     this.speechEl.classList.add('visible');

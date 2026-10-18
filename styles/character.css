@@ -13,15 +13,15 @@
   overflow: visible;
 }
 
-/* Character Actor Container */
+/* Character Actor Container - Lives strictly in the left lane */
 .character-actor {
   position: absolute;
   top: 0;
   left: 0;
-  width: 130px;
-  height: 130px;
+  width: 115px;
+  height: 115px;
   pointer-events: none;
-  transition: transform 0.45s cubic-bezier(0.34, 1.3, 0.64, 1);
+  transition: transform 0.35s cubic-bezier(0.34, 1.3, 0.64, 1);
   will-change: transform;
 }
 
@@ -90,11 +90,11 @@
   animation: digitalBlink 4s infinite;
 }
 
-/* Wand / Pointer Beam */
+/* Wand / Pointer Beam pointing into code */
 .pointer-wand {
   position: absolute;
-  right: -10px;
-  top: 40px;
+  right: -12px;
+  top: 42px;
   display: flex;
   align-items: center;
   pointer-events: none;
@@ -106,63 +106,62 @@
 }
 
 .laser-beam {
-  width: 28px;
-  height: 2px;
+  width: 42px;
+  height: 2.5px;
   background: linear-gradient(90deg, #38bdf8, transparent);
-  box-shadow: 0 0 6px #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
   border-radius: 2px;
 }
 
-/* Speech Bubble (Облачко диалога) */
-.speech-bubble {
-  position: absolute;
-  bottom: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-30%) scale(0.9);
-  min-width: 220px;
-  max-width: 320px;
-  background: #ffffff;
-  color: #0f172a;
-  padding: 10px 14px;
-  border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+/* Dedicated Teacher Speech & Explanation Banner */
+.speech-banner {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+  border-bottom: 2px solid var(--accent-blue);
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  box-shadow: inset 0 -1px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
   opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  z-index: 40;
 }
 
-.speech-bubble::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 30%;
-  border-width: 8px;
-  border-style: solid;
-  border-color: #ffffff transparent transparent transparent;
-}
-
-.speech-bubble.visible {
+.speech-banner.visible {
   opacity: 1;
-  transform: translateX(-30%) scale(1);
 }
 
 .speech-inner {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
-.speech-icon {
-  font-size: 20px;
+.speech-avatar {
+  font-size: 26px;
   line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.speech-content-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.speech-author {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-blue);
 }
 
 .speech-text {
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 600;
-  line-height: 1.45;
-  color: #1e293b;
+  line-height: 1.4;
+  color: #f8fafc;
 }
 
 /* Keyframes */
